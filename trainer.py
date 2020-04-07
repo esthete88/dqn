@@ -16,7 +16,46 @@ from player import play_and_record
 
 
 class Trainer:
-    """Module for training and evaluating agents"""
+    """Class for training and evaluating agents.
+
+    Parameters
+    ----------
+    agent : DQNAgent
+        Agent for solving the environment.
+    env : gym.env
+        Gym environment.
+    device : torch.device
+        Either `cuda` or `cpu`.
+    ddqn : bool
+        Whether to use double DQN.
+    opt : str
+        Optimizer.
+    opt_kwargs : dict
+        Optimizer optional parameters.
+
+    Attributes
+    ----------
+    target_network : DQNAgent
+        Target network for TD loss.
+    mean_rw_history : array
+        History of mean rewards.
+    td_loss_history : array
+        History of losses.
+    grad_norm_history : array
+        History of unclipped gradient norms.
+    initial_state_v_history : array
+        History of initial state values.
+    step : int
+        Current step.
+    best_reward : type
+        Best reward achieved during training.
+    agent
+    env
+    device
+    ddqn
+    opt
+
+    """
 
     def __init__(self, agent, env, device, ddqn=True, opt='adam', opt_kwargs=None):
         self.agent = agent
@@ -46,6 +85,42 @@ class Trainer:
             decay_steps=10**6, init_epsilon=1, final_epsilon=0.1, epsilon_decay=None,
             loss_freq=50, refresh_target_freq=5000, eval_freq=5000, save_freq=10000, gif_freq=30000,
             max_grad_norm=50, n_lives=5, checkpoint_dir=None, gif_dir=None):
+        """Short summary.
+
+        Parameters
+        ----------
+        replay_buffer : ReplayBuffer
+            Experience replay buffer where elements are stored.
+        batch_size : int
+        total_steps : int
+        timesteps_per_epoch : type
+            How many steps in the enviroment are stored in the replay buffer per epoch.
+        decay_steps : int
+            Steps for epsilon to decrease from `init_epsilon` to `final_epsilon`
+        init_epsilon : float
+        final_epsilon : float
+        epsilon_decay : function
+            Optional function that manages epsilon decay.
+        loss_freq : type
+            How often loss is stored in history.
+        refresh_target_freq : type
+            How often target network parameters are updated.
+        eval_freq : type
+            How often the agent is evaluated.
+        save_freq : type
+            How often the agent state is saved.
+        gif_freq : type
+            How often a gif image of the agent play is saved.
+        max_grad_norm : type
+            Max value of norm of the gradient.
+        n_lives : type
+            How many lives the agent has.
+        checkpoint_dir : str
+            Directory where checkpoints are saved.
+        gif_dir : str
+            Directory where gifs are saved.
+        """
+
         if hasattr(tqdm.tqdm, '_instances'):
             tqdm.tqdm._instances.clear()
 
