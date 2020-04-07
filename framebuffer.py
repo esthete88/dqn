@@ -4,8 +4,8 @@ from gym.core import Wrapper
 
 
 class FrameBuffer(Wrapper):
-    def __init__(self, env, n_frames=4, dim_order='tensorflow'):
-        """A gym wrapper that reshapes, crops and scales image into the desired shapes"""
+    def __init__(self, env, n_frames=4, dim_order='pytorch'):
+        """A gym wrapper that returns stacked `n_frames` instead of a single frame in non-Markovian processes"""
         super(FrameBuffer, self).__init__(env)
         self.dim_order = dim_order
         if dim_order == 'tensorflow':

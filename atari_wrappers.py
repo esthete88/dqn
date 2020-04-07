@@ -1,7 +1,10 @@
-# taken from OpenAI baselines.
+# partially taken from OpenAI baselines.
 
 import numpy as np
 import gym
+import cv2
+
+cv2.ocl.setUseOpenCL(False)
 
 
 class MaxAndSkipEnv(gym.Wrapper):
@@ -108,12 +111,39 @@ class AntiTorchWrapper(gym.ObservationWrapper):
     def __init__(self, env):
         gym.ObservationWrapper.__init__(self, env)
 
-        self.img_size = [env.observation_space.shape[i]
-                         for i in [1, 2, 0]
-                         ]
+        self.img_size = [env.observation_space.shape[i] for i in [1, 2, 0]]
         self.observation_space = gym.spaces.Box(0.0, 1.0, self.img_size)
 
     def observation(self, img):
         """what happens to each observation"""
         img = img.transpose(1, 2, 0)
         return img
+
+
+class PreprocessAtariObs(gym.ObservationWrapper):
+    def __init__(self, env):
+        """A gym wrapper that crops, scales image into the desired shapes and grayscales it."""
+        gym.ObservationWrapper.__init__(self, env)
+
+        self.img_size = (1, 84, 84)
+        self.observation_space = gym.spaces.Box(0.0, 1.0, self.img_size)
+
+    def observation(self, observation):
+        """what happens to each observation"""
+        observation = cv2.cvtColor(observation, cv2.COLOR_RGB2GRAY)
+        observation = cv2.resize(observation, (84, 84), cv2.INTER_AREA)[None, :, :]
+        return observation
+
+
+def PrimaryAtariWrap(env, clip_rewards=True):
+    assert 'NoFrameskip' in env.spec.id
+
+    env = MaxAndSkipEnv(env, skip=4)
+    env = EpisodicLifeEnv(env)
+    env = FireResetEnv(env)
+
+    if clip_rewards:
+        env = ClipRewardEnv(env)
+
+    env = PreprocessAtariObs(env)
+    return env
