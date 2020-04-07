@@ -85,7 +85,7 @@ class Trainer:
             decay_steps=10**6, init_epsilon=1, final_epsilon=0.1, epsilon_decay=None,
             loss_freq=50, refresh_target_freq=5000, eval_freq=5000, save_freq=10000, gif_freq=30000,
             max_grad_norm=50, n_lives=5, checkpoint_dir=None, gif_dir=None):
-        """Short summary.
+        """Trains the agent with linearly decreasing epsilon-greedy policy.
 
         Parameters
         ----------
