@@ -1,9 +1,10 @@
+import os
 import numpy as np
 import psutil
-from scipy.signal import convolve, gaussian
+import shutil
 import torch
 from torch import nn
-import os
+from scipy.signal import convolve, gaussian
 
 
 def get_cum_discounted_rewards(rewards, gamma):
@@ -88,3 +89,11 @@ def smoothen(values):
     # kernel = np.concatenate([np.arange(100), np.arange(99, -1, -1)])
     kernel = kernel / np.sum(kernel)
     return convolve(values, kernel, 'valid')
+
+
+def save_checkpoint(state, checkpoint_dir, is_best=False):
+    if is_best:
+        path = checkpoint_dir + '/best_checkpoint.pth'
+    else:
+        path = checkpoint_dir + '/checkpoint.pth'
+    torch.save(state, path)
