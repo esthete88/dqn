@@ -97,3 +97,11 @@ def save_checkpoint(state, checkpoint_dir, is_best=False):
     else:
         path = checkpoint_dir + '/checkpoint.pth'
     torch.save(state, path)
+
+
+def load_checkpoint(checkpoint_dir, is_best=False):
+    if is_best:
+        path = checkpoint_dir + '/best_checkpoint.pth'
+    else:
+        path = checkpoint_dir + '/checkpoint.pth'
+    return torch.load(path)
