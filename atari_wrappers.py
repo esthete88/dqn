@@ -135,7 +135,7 @@ class PreprocessAtariObs(gym.ObservationWrapper):
         return observation
 
 
-class FrameBuffer(Wrapper):
+class FrameBuffer(gym.Wrapper):
     def __init__(self, env, n_frames=4, dim_order='pytorch'):
         """A gym wrapper that returns stacked `n_frames` instead of a single frame in non-Markovian processes"""
         super(FrameBuffer, self).__init__(env)
@@ -149,7 +149,7 @@ class FrameBuffer(Wrapper):
         else:
             raise ValueError(
                 'dim_order should be "tensorflow" or "pytorch", got {}'.format(dim_order))
-        self.observation_space = Box(0.0, 1.0, obs_shape)
+        self.observation_space = gym.spaces.Box(0.0, 1.0, obs_shape)
         self.framebuffer = np.zeros(obs_shape, 'float32')
 
     def reset(self):
@@ -191,8 +191,8 @@ def PrimaryAtariWrap(env, clip_rewards=True):
     return env
 
 
-def make_env(ENV_NAME="BreakoutNoFrameskip-v4", clip_rewards=True, seed=None):
-    env = gym.make(ENV_NAME)  # create raw env
+def make_env(env_name="BreakoutNoFrameskip-v4", clip_rewards=True, seed=None):
+    env = gym.make(env_name)  # create raw env
 
     assert 'NoFrameskip' in env.spec.id
 
