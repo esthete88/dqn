@@ -33,7 +33,7 @@ class DQNAgent(nn.Module):
 
     def forward(self, state_t):
         """
-        takes agent's observation (tensor), returns qvalues (tensor)
+        Takes agent's observation (tensor), returns qvalues (tensor).
         :param state_t: a batch states, shape = [batch_size, *state_dim=4]
         """
         scaled_state_t = state_t / 255.
@@ -41,14 +41,14 @@ class DQNAgent(nn.Module):
         return qvalues
 
     def get_qvalues(self, states):
-        """like forward, but works on numpy arrays, not tensors"""
+        """Like forward, but works on numpy arrays, not tensors"""
         model_device = next(self.parameters()).device
         states = torch.tensor(states, device=model_device, dtype=torch.float32)
         qvalues = self.forward(states)
         return qvalues.data.cpu().numpy()
 
     def sample_actions(self, qvalues):
-        """pick actions given qvalues. Uses epsilon-greedy exploration strategy. """
+        """Pick actions given qvalues. Uses epsilon-greedy exploration strategy."""
         epsilon = self.epsilon
         batch_size, n_actions = qvalues.shape
 
@@ -60,13 +60,13 @@ class DQNAgent(nn.Module):
         return np.where(should_explore, random_actions, best_actions)
 
     def get_actions(self, states):
-        """pick actions given states"""
+        """Pick actions given states."""
         qvalues = self.get_qvalues(states)
         return self.sample_actions(qvalues)
 
 
 class DuelingDQNAgent(DQNAgent):
-    """Dueling DQN agent from 1511.06581"""
+    """Dueling DQN agent."""
 
     def __init__(self, state_shape, n_actions, epsilon=0):
         super().__init__(state_shape, n_actions, epsilon)
@@ -95,7 +95,7 @@ class DuelingDQNAgent(DQNAgent):
 
     def forward(self, state_t):
         """
-        takes agent's observation (tensor), returns qvalues (tensor)
+        Takes agent's observation (tensor), returns qvalues (tensor).
         :param state_t: a batch states, shape = [batch_size, *state_dim=4]
         """
         scaled_state_t = state_t / 255.
