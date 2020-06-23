@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 def compute_td_loss(states, actions, rewards, next_states, is_done,
                     agent, target_network, device, double_dqn, gamma=0.99):
-    """Compute TD loss"""
+    """Compute TD loss."""
     states = torch.tensor(states, device=device, dtype=torch.float)  # shape: [batch_size, *state_shape]
     actions = torch.tensor(actions, device=device, dtype=torch.long)  # shape: [batch_size]
     rewards = torch.tensor(rewards, device=device, dtype=torch.float)  # shape: [batch_size]

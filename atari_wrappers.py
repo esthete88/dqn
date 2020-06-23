@@ -9,7 +9,7 @@ cv2.ocl.setUseOpenCL(False)
 
 class MaxAndSkipEnv(gym.Wrapper):
     def __init__(self, env, skip=4):
-        """Return only every `skip`-th frame"""
+        """Return only every `skip`-th frame."""
         gym.Wrapper.__init__(self, env)
         # most recent raw observations (for max pooling across time steps)
         self._obs_buffer = np.zeros(
@@ -49,8 +49,8 @@ class ClipRewardEnv(gym.RewardWrapper):
 
 
 class FireResetEnv(gym.Wrapper):
+    """Take action on reset for environments that are fixed until firing."""
     def __init__(self, env):
-        """Take action on reset for environments that are fixed until firing."""
         gym.Wrapper.__init__(self, env)
         assert env.unwrapped.get_action_meanings()[1] == 'FIRE'
         assert len(env.unwrapped.get_action_meanings()) >= 3
@@ -70,10 +70,10 @@ class FireResetEnv(gym.Wrapper):
 
 
 class EpisodicLifeEnv(gym.Wrapper):
+    """Make end-of-life == end-of-episode, but only reset on true game over.
+    Done by DeepMind for the DQN and co. since it helps value estimation.
+    """
     def __init__(self, env):
-        """Make end-of-life == end-of-episode, but only reset on true game over.
-        Done by DeepMind for the DQN and co. since it helps value estimation.
-        """
         gym.Wrapper.__init__(self, env)
         self.lives = 0
         self.was_real_done = True
@@ -115,14 +115,14 @@ class AntiTorchWrapper(gym.ObservationWrapper):
         self.observation_space = gym.spaces.Box(0.0, 1.0, self.img_size)
 
     def observation(self, img):
-        """what happens to each observation"""
+        """What happens to each observation."""
         img = img.transpose(1, 2, 0)
         return img
 
 
 class PreprocessAtariObs(gym.ObservationWrapper):
+    """A gym wrapper that crops, scales image into the desired shapes and grayscales it."""
     def __init__(self, env):
-        """A gym wrapper that crops, scales image into the desired shapes and grayscales it."""
         gym.ObservationWrapper.__init__(self, env)
 
         self.img_size = (1, 84, 84)
@@ -136,8 +136,8 @@ class PreprocessAtariObs(gym.ObservationWrapper):
 
 
 class FrameBuffer(gym.Wrapper):
+    """A gym wrapper that returns stacked `n_frames` instead of a single frame in non-Markovian processes"""
     def __init__(self, env, n_frames=4, dim_order='pytorch'):
-        """A gym wrapper that returns stacked `n_frames` instead of a single frame in non-Markovian processes"""
         super(FrameBuffer, self).__init__(env)
         self.dim_order = dim_order
         if dim_order == 'tensorflow':
@@ -153,13 +153,13 @@ class FrameBuffer(gym.Wrapper):
         self.framebuffer = np.zeros(obs_shape, 'float32')
 
     def reset(self):
-        """resets breakout, returns initial frames"""
+        """Resets breakout, returns initial frames."""
         self.framebuffer = np.zeros_like(self.framebuffer)
         self.update_buffer(self.env.reset())
         return self.framebuffer
 
     def step(self, action):
-        """plays breakout for 1 step, returns frame buffer"""
+        """Plays breakout for 1 step, returns frame buffer."""
         new_img, reward, done, info = self.env.step(action)
         self.update_buffer(new_img)
         return self.framebuffer, reward, done, info

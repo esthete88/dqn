@@ -239,7 +239,7 @@ class Trainer:
 
 
 def evaluate(env, agent, n_games=1, greedy=False, t_max=100000, render=False):
-    """ Plays n_games full games. If greedy, picks actions as argmax(qvalues). Returns mean reward. """
+    """Plays n_games full games. If greedy, picks actions as argmax(qvalues). Returns mean reward."""
     rewards = []
     frames = []
 

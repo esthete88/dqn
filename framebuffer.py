@@ -21,13 +21,13 @@ class FrameBuffer(Wrapper):
         self.framebuffer = np.zeros(obs_shape, 'float32')
 
     def reset(self):
-        """resets breakout, returns initial frames"""
+        """Resets breakout, returns initial frames."""
         self.framebuffer = np.zeros_like(self.framebuffer)
         self.update_buffer(self.env.reset())
         return self.framebuffer
 
     def step(self, action):
-        """plays breakout for 1 step, returns frame buffer"""
+        """Plays breakout for 1 step, returns frame buffer."""
         new_img, reward, done, info = self.env.step(action)
         self.update_buffer(new_img)
         return self.framebuffer, reward, done, info

@@ -1,15 +1,11 @@
-import os
 import numpy as np
 import psutil
-import shutil
 import torch
-from torch import nn
 from scipy.signal import convolve, gaussian
 
 
 def get_cum_discounted_rewards(rewards, gamma):
-    """
-    evaluates cumulative discounted rewards:
+    """Evaluates cumulative discounted rewards:
     r_t + gamma * r_{t+1} + gamma^2 * r_{t_2} + ...
     """
     cum_rewards = []
@@ -20,9 +16,7 @@ def get_cum_discounted_rewards(rewards, gamma):
 
 
 def play_and_log_episode(env, agent, gamma=0.99, t_max=10000):
-    """
-    always greedy
-    """
+    """Always greedy."""
     states = []
     v_mc = []
     v_agent = []
