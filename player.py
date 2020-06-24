@@ -1,3 +1,7 @@
+import numpy as np
+from PIL import Image
+
+
 def play_and_record(initial_state, agent, env, exp_replay=None, n_steps=1):
     """
     Play the game for exactly n steps, record every (s,a,r,s', done) to replay buffer.
@@ -24,3 +28,30 @@ def play_and_record(initial_state, agent, env, exp_replay=None, n_steps=1):
             s = env.reset()
 
     return total_reward, s
+
+
+def evaluate(env, agent, n_games=1, greedy=False, t_max=100000, render=False):
+    """Plays n_games full games. If greedy, picks actions as argmax(qvalues). Returns mean reward."""
+    rewards = []
+    frames = []
+
+    for _ in range(n_games):
+        s = env.reset()
+        reward = 0
+
+        for _ in range(t_max):
+            frames.append(Image.fromarray(env.render('rgb_array')))
+
+            qvalues = agent.get_qvalues([s])
+            action = qvalues.argmax(axis=-1)[0] if greedy else agent.sample_actions(qvalues)[0]
+            s, r, done, _ = env.step(action)
+            reward += r
+            if done:
+                break
+
+        rewards.append(reward)
+
+    if render:
+        return np.mean(rewards), frames
+
+    return np.mean(rewards)

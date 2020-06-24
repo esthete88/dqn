@@ -177,20 +177,6 @@ class FrameBuffer(gym.Wrapper):
             [img, cropped_framebuffer], axis=axis)
 
 
-def PrimaryAtariWrap(env, clip_rewards=True):
-    assert 'NoFrameskip' in env.spec.id
-
-    env = MaxAndSkipEnv(env, skip=4)
-    env = EpisodicLifeEnv(env)
-    env = FireResetEnv(env)
-
-    if clip_rewards:
-        env = ClipRewardEnv(env)
-
-    env = PreprocessAtariObs(env)
-    return env
-
-
 def make_env(env_name="BreakoutNoFrameskip-v4", clip_rewards=True, seed=None):
     env = gym.make(env_name)  # create raw env
 
